@@ -1,1 +1,4 @@
-# dev
+
+Requirements (python):
+    -scapy
+    -paramiko
