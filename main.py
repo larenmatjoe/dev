@@ -32,7 +32,8 @@ class deepPacket:                       #packet monitoring class
             except IndexError:
                 pass
             packet = None
-        dataBase.databaseConnection(array)
+        if len(array) != 0:
+            dataBase.databaseConnection(array)
 
     def monitorConnections():
         collection = []
