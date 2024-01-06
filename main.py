@@ -38,9 +38,10 @@ class deepPacket:                       #packet monitoring class
     def monitorConnections():
         collection = []
         pointer = 0
+        global flag
         try:
             try:
-                while True:
+                while flag:
                     packet = sc.sniff(count = 20, timeout = 5)      #sniffing packet using scapy till 20 packets or 5 seconds
                     collection.append(threading.Thread(target = deepPacket.filterConnection, args = (packet,) ))   #creating a new thread for packet classification
                     collection[pointer].start()  #starting thread
@@ -52,8 +53,8 @@ class deepPacket:                       #packet monitoring class
                 pass
         except ValueError:
             pass
-try:
-    deepPacket.monitorConnections()
-except KeyboardInterrupt:
-    exit(0)
-
+some = threading.Thread(target = deepPacket.monitorConnections, args = "")
+some.start()
+value = input("")
+flag = False
+some.join()
