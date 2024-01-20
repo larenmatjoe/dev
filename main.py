@@ -26,6 +26,8 @@ class deepPacket:                       #packet monitoring class
                 try:
                     ip = packet[1].src
                     port = packet[2].dport
+                    if int(port) > 2000:
+                        continue
                     array.append([ip,port])
                 except AttributeError or ValueError:
                     pass
