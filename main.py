@@ -22,39 +22,30 @@ class deepPacket:                       #packet monitoring class
     def filterConnection(packets):
         array = []
         for packet in packets:
-            try:
-                try:
-                    ip = packet[1].src
-                    port = packet[2].dport
-                    if int(port) > 2000:
-                        continue
-                    array.append([ip,port])
-                except AttributeError or ValueError:
-                    pass
-            except IndexError:
-                pass
-            packet = None
+            if packet.haslayer(sc.IP) and (packet.haslayer(sc.TCP) or packet.haslayer(sc.UDP)):
+                ip = packet[1].src
+                port = packet[2].dport
+                print(packet[1].src, packet[1].dst)
+                if int(port) > 2000:
+                    continue
+                array.append([ip,port])
+        packet = None
         if len(array) != 0:
-            dataBase.databaseConnection(array)
+            pass
+            #dataBase.databaseConnection(array)
 
     def monitorConnections():
         collection = []
         pointer = 0
         global flag
-        try:
-            try:
-                while flag:
-                    packet = sc.sniff(count = 20, timeout = 5)      #sniffing packet using scapy till 20 packets or 5 seconds
-                    collection.append(threading.Thread(target = deepPacket.filterConnection, args = (packet,) ))   #creating a new thread for packet classification
-                    collection[pointer].start()  #starting thread
-                    pointer+=1
-                    if (pointer == 15):
-                        pointer = 0 
-                        collection.clear()
-            except AttributeError:
-                pass
-        except ValueError:
-            pass
+        while flag:
+            packet = sc.sniff(count = 20, timeout = 5)
+            collection.append(threading.Thread(target = deepPacket.filterConnection, args = (packet,) ))
+            collection[pointer].start()
+            pointer+=1
+            if (pointer == 15):
+                pointer = 0 
+                collection.clear()
 some = threading.Thread(target = deepPacket.monitorConnections, args = "")
 some.start()
 value = input("")
